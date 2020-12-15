@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoteKeeper - {{title}}</title>
+</head>
+<body>
+    
+    <h1>Sign Up</h1>
+
+    <form method='POST' action=''>
+            {{form.hidden_tag()}}
+            {{form.email}}
+            {{form.username}}
+            {{form.password}}
+            <button class="btn" type="submit">Sign Up</button><br>
+    </form>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 15%;
+            margin-top: 10px;
+        }
+
+        form > input {
+            margin-bottom: 10px;
+            padding: 4px;
+        }
+    </style>
+</body>
+</html>
