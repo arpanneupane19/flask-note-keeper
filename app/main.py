@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, session
+from flask import Flask, render_template, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
@@ -11,6 +11,14 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 app.config['SECRET_KEY'] = 'c1155c6a351e49eba15c00ce577b259e'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -35,9 +43,10 @@ class RegisterForm(FlaskForm):
             raise ValidationError("That email address belongs to different user. Please choose a different one.")
 
 class LoginForm(FlaskForm):
-    username = StringField("Username", validators=[InputRequired(), Length(max=15)], render_kw={"Username"})
-    password = PasswordField("Password", validators=[InputRequired(), Length(max=50)], render_kw={"Password"})
+    username = StringField("Username", validators=[InputRequired(), Length(max=15)], render_kw={"placeholder": "Username"})
+    password = PasswordField("Password", validators=[InputRequired(), Length(max=50)], render_kw={"placeholder":  "Password"})
     submit = SubmitField("Login")
+
 
 @app.route('/home')
 @app.route('/')
@@ -48,7 +57,16 @@ def home():
 @app.route('/login', methods=['GET','POST'])
 def login():
     form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user:
+            if bcrypt.check_password_hash(user.password, form.password.data):
+                login_user(user)
+                return redirect(url_for("dashboard"))
+    
+        flash("User does not exist, or invalid username or password.")
     return render_template('login.html', title="Login", form=form)
+
 
 @app.route('/register', methods=['GET','POST'])
 def register():
@@ -60,6 +78,18 @@ def register():
         db.session.commit()
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
+
+@app.route('/logout', methods=["GET","POST"])
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+
+@app.route('/dashboard', methods=["GET",'POST'])
+@login_required
+def dashboard():
+    return "Hello"
 
 if __name__ == '__main__':
     app.run(debug=True)

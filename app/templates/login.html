@@ -10,12 +10,40 @@
     <h1>Login</h1>
 
     <form method='POST' action=''>
+            {{form.hidden_tag()}}
+            {{form.email}}
+            {{form.username}}
+            {{form.password}}
+            {{form.submit}}
     </form>
-
     <style>
         * {
             margin: 0;
             padding: 0;
+        }
+
+        h1 {
+            margin-top: 40px;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 15%;
+            margin-top: 10px;
+        }
+
+        form > input {
+            margin-bottom: 10px;
+            padding: 4px;
         }
     </style>
 </body>
