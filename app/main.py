@@ -22,6 +22,7 @@ class RegisterForm(FlaskForm):
     email = StringField("Email", validators=[InputRequired(), Email(message="Invalid Email"), Length(max=50)], render_kw={"placeholder": "example@gmail.com"})
     username = StringField("Username", validators=[InputRequired(), Length(min=4, max=15)], render_kw={"placeholder": "Username"})
     password = PasswordField("Password", validators=[InputRequired(), Length(min=4, max=15)], render_kw={"placeholder": "********"})
+    submit = SubmitField("Sign Up")
 
     def validate_username(self, username):
         existing_user_username = User.query.filter_by(username=username.data).first()
@@ -33,6 +34,11 @@ class RegisterForm(FlaskForm):
         if existing_user_email:
             raise ValidationError("That email address belongs to different user. Please choose a different one.")
 
+class LoginForm(FlaskForm):
+    username = StringField("Username", validators=[InputRequired(), Length(max=15)], render_kw={"Username"})
+    password = PasswordField("Password", validators=[InputRequired(), Length(max=50)], render_kw={"Password"})
+    submit = SubmitField("Login")
+
 @app.route('/home')
 @app.route('/')
 def home():
@@ -41,7 +47,8 @@ def home():
 
 @app.route('/login', methods=['GET','POST'])
 def login():
-    return render_template('login.html', title="Login")
+    form = LoginForm()
+    return render_template('login.html', title="Login", form=form)
 
 @app.route('/register', methods=['GET','POST'])
 def register():
