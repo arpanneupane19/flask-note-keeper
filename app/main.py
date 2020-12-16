@@ -25,6 +25,13 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(15), unique=True)
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.String(80))
+    notes = db.relationship('Note', backref='writer', lazy='dynamic')
+
+class Note(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(25))
+    note_body = db.Column(db.String(100))
+    note_writer = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 class RegisterForm(FlaskForm):
     email = StringField("Email", validators=[InputRequired(), Email(message="Invalid Email"), Length(max=50)], render_kw={"placeholder": "example@gmail.com"})
