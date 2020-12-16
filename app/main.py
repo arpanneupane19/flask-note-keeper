@@ -89,6 +89,7 @@ def register():
 
 @app.route('/logout', methods=["GET","POST"])
 def logout():
+    session.clear()
     logout_user()
     return redirect(url_for('login'))
 
