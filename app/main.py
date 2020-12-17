@@ -20,6 +20,7 @@ login_manager.login_view = "login"
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(15), unique=True)
@@ -27,11 +28,13 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(80))
     notes = db.relationship('Note', backref='writer', lazy='dynamic')
 
+
 class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(25))
     note_body = db.Column(db.String(100))
     note_writer = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
 
 class RegisterForm(FlaskForm):
     email = StringField("Email", validators=[InputRequired(), Email(message="Invalid Email"), Length(max=50)], render_kw={"placeholder": "example@gmail.com"})
@@ -49,15 +52,18 @@ class RegisterForm(FlaskForm):
         if existing_user_email:
             raise ValidationError("That email address belongs to different user. Please choose a different one.")
 
+
 class LoginForm(FlaskForm):
     username = StringField("Username", validators=[InputRequired(), Length(max=15)], render_kw={"placeholder": "Username"})
     password = PasswordField("Password", validators=[InputRequired(), Length(max=50)], render_kw={"placeholder":  "Password"})
     submit = SubmitField("Login")
 
+
 class NewNoteForm(FlaskForm):
-    title = StringField("Title", validators=[InputRequired(), Length(max=15)], render_kw={"placeholder": "Title"})
-    note_body = PasswordField("Note Body", validators=[InputRequired(), Length(max=50)], render_kw={"placeholder":  "Note Body"})
+    title = StringField("Title", validators=[InputRequired(), Length(max=25)], render_kw={"placeholder": "Title"})
+    note_body = StringField("Note Body", validators=[InputRequired(), Length(max=100)], render_kw={"placeholder":  "Note Body"})
     submit = SubmitField("Add Note")
+
 
 @app.route('/home')
 @app.route('/')
@@ -108,6 +114,20 @@ def dashboard():
 @login_required
 def new_note():
     form = NewNoteForm()
+    if form.validate_on_submit():
+        new_note = Note(title=form.title.data, note_body=form.note_body.data, writer=current_user)
+        db.session.add(new_note)
+        db.session.commit()
+        return redirect(url_for('view_notes'))
     return render_template('new_note.html', title='New Note', form=form)
+
+
+@app.route('/my-notes', methods=['GET','POST'])
+@login_required
+def view_notes():
+    notes = Note.query.filter_by(writer=current_user).all()
+    return render_template('my_notes.html', notes=notes, title='My Notes')
+
+
 if __name__ == '__main__':
     app.run(debug=True)
