@@ -128,6 +128,7 @@ def view_notes():
     notes = Note.query.filter_by(writer=current_user).all()
     return render_template('my_notes.html', notes=notes, title='My Notes')
 
+
 @app.route('/delete-note/<int:note_id>', methods=['GET',"POST"])
 def delete_note(note_id):
     note = Note.query.get_or_404(note_id)
