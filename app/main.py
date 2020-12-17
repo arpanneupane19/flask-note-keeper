@@ -54,6 +54,10 @@ class LoginForm(FlaskForm):
     password = PasswordField("Password", validators=[InputRequired(), Length(max=50)], render_kw={"placeholder":  "Password"})
     submit = SubmitField("Login")
 
+class NewNoteForm(FlaskForm):
+    title = StringField("Title", validators=[InputRequired(), Length(max=15)], render_kw={"placeholder": "Title"})
+    note_body = PasswordField("Note Body", validators=[InputRequired(), Length(max=50)], render_kw={"placeholder":  "Note Body"})
+    submit = SubmitField("Add Note")
 
 @app.route('/home')
 @app.route('/')
@@ -97,7 +101,13 @@ def logout():
 @app.route('/dashboard', methods=["GET",'POST'])
 @login_required
 def dashboard():
-    return "Hello"
+    return render_template('dashboard.html', title='Dashboard')
 
+
+@app.route('/new-note', methods=['GET','POST'])
+@login_required
+def new_note():
+    form = NewNoteForm()
+    return render_template('new_note.html', title='New Note', form=form)
 if __name__ == '__main__':
     app.run(debug=True)
