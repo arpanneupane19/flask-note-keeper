@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoteKeeper - {{title}}</title>
+</head>
+<body>
+
+    <h1>My Notes</h1>
+    <a href="{{url_for('dashboard')}}">Back</a><br>
+
+    {% for note in notes %}
+        <div>
+            <h3>{{note.title}}</h3> 
+            <p>{{note.note_body}}</p>
+        </div><br>
+    {% endfor %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+    
+</body>
+</html>
