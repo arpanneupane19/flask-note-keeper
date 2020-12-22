@@ -7,32 +7,92 @@
 </head>
 <body>
 
+    <div class='navbar'>
+        <nav>
+            <ul>
+                <li><a href="#">NoteKeeper</a></li>
+                <div class="links">
+                    <li><a href="{{url_for('view_notes')}}">My Notes</a></li>
+                    <li><a href="{{url_for('new_note')}}">New Note</a></li>
+                    <li><a href="{{url_for('logout')}}">Logout</a></li>
+                </div>
+            </ul>
+        </nav>
+    </div>
+
     <h1>My Notes</h1>
-    <a href="{{url_for('dashboard')}}">Back</a><br>
 
     {% for note in notes %}
-        <div>
+        <div class="note">
             <h3>{{note.title}}</h3> 
             <p>{{note.note_body}}</p>
             <a href="{{url_for('delete_note', note_id=note.id)}}">Delete</a>
-        </div><br>
+        </div>
     {% endfor %}
+
+
+
     <style>
         * {
-            margin: 0;
             padding: 0;
+            margin: 0;
+            list-style-type: none;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
         }
 
-        body {
+        a {
+            text-decoration: none;
+        }
+
+        h1 {
             margin-top: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            text-align: center;
         }
 
-        div {
+        .navbar {
+            height: 80px;
+            background: black;
+        }
+
+        .navbar > nav > ul {
+            display: flex;
+            padding-left: 40px;
+            padding-right: 40px;
+            padding-top: 30px;
+            justify-content: space-between;
+        }
+
+        .navbar > nav > ul > li > a {
+            color: #0077ff;
+            text-decoration: none;
+
+        }
+
+        .links {
+            display: flex;
+        }
+
+
+        .links > li > a {
+            color: #0077ff;
+            margin-right: 15px;
+            text-decoration: none;
+        }
+
+        .links > li > a:hover {
+            background-color: white;
             padding: 10px;
+            color: #0077ff;
+            border-radius: 4px;
+            transition: .3s;
+        }
+
+
+        .note {
+            margin-top: 15px;
+            padding: 10px;
+            margin-left: 40%;
+            margin-right: 40%;
             border: 1px solid black;
         }
     </style>
