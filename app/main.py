@@ -79,7 +79,7 @@ def login():
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user)
-                return redirect(url_for("dashboard"))
+                return redirect(url_for("view_notes"))
     
         flash("User does not exist, or invalid username or password.")
     return render_template('login.html', title="Login", form=form)
@@ -102,12 +102,6 @@ def logout():
     session.clear()
     logout_user()
     return redirect(url_for('login'))
-
-
-@app.route('/dashboard', methods=["GET",'POST'])
-@login_required
-def dashboard():
-    return render_template('dashboard.html', title='Dashboard')
 
 
 @app.route('/new-note', methods=['GET','POST'])
